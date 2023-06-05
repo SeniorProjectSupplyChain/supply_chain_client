@@ -17,12 +17,24 @@ export class ViewProductComponent implements OnInit{
   products: any
   product: any
   productId: string = ""
+  showFullText = false;
   data: any
   showEditModal: boolean = false
   selectedImageFile?: ImageSnippet
   reloadDetailProduct = false;
 
   openDialog: boolean = false
+
+  onBackdropClick(event: MouseEvent) {
+    console.log("click");
+
+    const backdrop = event.target as HTMLElement;
+    const dialogContent = this.myDialog?.nativeElement.querySelector('.backdrop');
+
+    if (backdrop === dialogContent) {
+      this.close();
+    }
+  }
 
   open(product: any) {
     this.product = product
@@ -75,8 +87,6 @@ export class ViewProductComponent implements OnInit{
     }
     });
 
-
-
     // this.exerciseService.getExercise(productId).subscribe({
     //   next: (response) => {
     //     this.updateExercise = response
@@ -85,5 +95,17 @@ export class ViewProductComponent implements OnInit{
     //     console.error(err)
     //   },
     // })
+  }
+
+  harvestProduct(productId: any) {
+    // console.log(productId)
+    this.viewProductService.harvestProduct(productId)
+      .subscribe({
+        next: (response) => {
+          this.data.data.map(response);
+          this.product = this.data.data;
+        }
+      })
+
   }
 }
