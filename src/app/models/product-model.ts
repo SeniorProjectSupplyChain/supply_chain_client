@@ -39,3 +39,8 @@ export interface Actors {
   distributorId: string;
   retailerId: string;
 }
+
+export interface ProductImport {
+  productId: string;
+  price: number;
+}

@@ -3,8 +3,9 @@ import {UserService} from "../../../../_services/user.service";
 import {common} from "../../../../../../common";
 import {ViewProductService} from "../view-product.service";
 import { Unit } from "../../../../../assets/ENUM";
-import { Product } from "../../../../models/product-model";
+import { Product, ProductObj } from "../../../../models/product-model";
 import {ProductService} from "../../../../_services/product.service";
+import {reload} from "@angular/fire/auth";
 
 @Component({
   selector: 'app-detail-product',
@@ -18,19 +19,20 @@ export class DetailProductComponent implements OnInit{
   @ViewChild('dialogCert') certDialog: ElementRef | undefined;
 
 
-  @Input() product: Product | undefined;
+  @Input() product: ProductObj | undefined;
   @Input() reload = false;
 
   openDialog: boolean = false
   openCertification: boolean = false
   hasCertificate: boolean = false
+  loading: boolean = false
+  isCreateForm: boolean = false;
+  reloadDetailProduct = false;
 
   status = common.status
   statusSelected = 0
   units = Object.values(Unit);
-  isCreateForm: boolean = false;
   user: any = '';
-  reloadDetailProduct = false;
   data: any
 
   item: Product = {
@@ -93,7 +95,7 @@ export class DetailProductComponent implements OnInit{
       this.isCreateForm = false;
       this.productService.setProduct(this.product)
       this.data = this.productService.getProduct()
-      this.item = this.data
+      this.item.productObj = this.data
     } else {
       console.log("false", this.product)
       this.isCreateForm = true;
@@ -114,16 +116,18 @@ export class DetailProductComponent implements OnInit{
 
 
   onSubmit() {
+    this.loading = true
     console.log("this is submit");
     console.log("item", this.product)
-    if (this.product?.productObj.productId) {
-      console.log("update",this.product.productObj.productId)
+    if (this.product?.productId) {
+      console.log("update",this.product.productId)
       this.item.productObj.productId = JSON.parse(JSON.stringify(this.product)).productId
       this.closeCertificate(false)
       this.viewProductService.updateProduct(this.item).subscribe({
         next: (response) => {
           console.log(response);
-          this.close()
+          this.loading = false
+          this.close(true, true)
         }
       });
     } else {
@@ -132,7 +136,8 @@ export class DetailProductComponent implements OnInit{
       this.viewProductService.createProduct(this.item).subscribe({
         next: (response) => {
           console.log(response);
-          this.close()
+          this.loading = false
+          this.close(true, true)
         }
       });
     }
@@ -140,8 +145,11 @@ export class DetailProductComponent implements OnInit{
     // this.productService.createProduct(item)
   }
 
-  close() {
-    this.dataEvent.emit(false)
+  close(isClose= true, isReload= false ) {
+    this.dataEvent.emit({
+      isClose : isClose,
+      isReload: isReload
+    })
   }
 
   handleDataEvent(data: any) {
@@ -168,7 +176,7 @@ export class DetailProductComponent implements OnInit{
 
   addCertificate(data: any) {
     if (this.product) {
-      this.product.productObj.certificateUrl = data;
+      this.product.certificateUrl = data;
     }
   }
 

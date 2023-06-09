@@ -1,10 +1,10 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {AuthService} from "../../../_services/auth.service";
+import {AuthService} from "../../_services/auth.service";
 
 @Component({
   selector: 'app-supplier-navbar',
   templateUrl: './supplier-navbar.component.html',
-  styleUrls: ['./supplier-navbar.component.scss'],
+  styleUrls: ['./supplier-navbar.component.scss']
 })
 export class SupplierNavbarComponent implements OnInit{
   navbarOpen = false;

@@ -1,25 +1,25 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {ViewProductService} from './view-product.service'
-import {AngularFireStorage} from "@angular/fire/compat/storage";
-import {Product, ProductObj} from "../../../models/product-model";
-import {Unit} from "../../../../assets/ENUM";
-import {UserService} from "../../../_services/user.service";
-import {UserToken} from "../../../models/user-model";
-import {AuthService} from "../../../_services/auth.service";
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
+import { ViewProductService } from '../view-product/view-product.service';
+import { Product, ProductObj } from 'src/app/models/product-model';
+import { Unit } from 'src/assets/ENUM';
+import { UserToken } from 'src/app/models/user-model';
+import { AngularFireStorage } from '@angular/fire/compat/storage';
+import { UserService } from 'src/app/_services/user.service';
+import { AuthService } from 'src/app/_services/auth.service';
+import { MatPaginator } from '@angular/material/paginator';
 
-class ImageSnippet {
-  constructor(public src: string, public file: File) {
-  }
-}
 
 @Component({
-  selector: 'app-view-product',
-  templateUrl: './view-product.component.html',
-  styleUrls: ['./view-product.component.css']
+  selector: 'app-table-supplier',
+  templateUrl: './table-supplier.component.html',
+  styleUrls: ['./table-supplier.component.scss']
 })
-export class ViewProductComponent implements OnInit {
+export class TableSupplierComponent implements OnInit{
   @ViewChild('dialog') myDialog: ElementRef | undefined;
   @ViewChild('dialogCert') certDialog: ElementRef | undefined;
+  @ViewChild('productPaginator', { static: true }) productPaginator!: MatPaginator;
+
   products: any[] = []
   productId: string = ""
   data: any
@@ -65,8 +65,23 @@ export class ViewProductComponent implements OnInit {
     }
   };
 
-  product : ProductObj = this.item.productObj
-
+  product: ProductObj = this.item.productObj
+  ngOnInit(): void {
+    this.getAllProduct();
+  }
+  displayProductColumns: string[] = ['index','productName','cultivatedDate','harvestedDate','price','status','action']
+  dataSourceProduct = new MatTableDataSource<any>;
+  productModel : ProductObj []=[]
+  getAllProduct(){
+    this.viewProductService.getAllProduct().subscribe(
+      response =>{
+        let data:any = response
+        this.productModel = data.data
+        this.dataSourceProduct = new MatTableDataSource(this.productModel)
+        this.dataSourceProduct.paginator = this.productPaginator
+      }
+    )
+  }
   onBackdropClick(event: MouseEvent) {
     console.log("click");
 
@@ -89,9 +104,9 @@ export class ViewProductComponent implements OnInit {
     this.myDialog?.nativeElement.close();
     if (data.isReload) {
       location.reload()
-
     }
   }
+
 
   constructor(
     private storage: AngularFireStorage,
@@ -108,27 +123,6 @@ export class ViewProductComponent implements OnInit {
       }
     });
   }
-
-  ngOnInit(): void {
-    console.log("INIT")
-    this.loadData()
-  }
-
-  loadData() {
-    this.viewProductService.getAllProduct().subscribe({
-      next: (response) => {
-        this.data = response;
-        for (let i of this.data.data) {
-          this.products.push(this.viewProductService.mapProductobjToproduct(i))
-        }
-        console.log("HARVEST",this.products)
-      },
-      error: (err) => {
-        console.error(err)
-      }
-    })
-  }
-
   harvestProduct(productId: any) {
     console.log("HARVEST",productId)
     this.viewProductService.harvestProduct(productId)
@@ -140,18 +134,4 @@ export class ViewProductComponent implements OnInit {
         }
       })
   }
-
-  // openCertificate(product: any) {
-  //   this.product = product
-  //   console.log("OPEN", product)
-  //   this.hasCertificate = !!product.productObj.certificateUrl;
-  //   this.openCertification = true
-  // }
-
-  // closeCertificate(data: any) {
-  //   console.log("du lieu truyen ve", data)
-  //   this.openCertification = data
-  //   this.openDialog = data
-  //   this.certDialog?.nativeElement.close();
-  // }
 }
