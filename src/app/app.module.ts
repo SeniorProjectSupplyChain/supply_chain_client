@@ -9,6 +9,8 @@ import {AppComponent} from './app.component';
 import {AdminComponent} from './layouts/admin/admin.component';
 import {AuthComponent} from './layouts/auth/auth.component';
 import {NgxLoadingModule} from 'ngx-loading';
+import { DateFnsModule } from 'ngx-date-fns';
+// import { jqxDateTimeInputComponent } from 'jqwidgets-ng/angular_jqxdatetimeinput';
 
 // admin views
 import {DashboardComponent} from './views/admin/dashboard/dashboard.component';
@@ -86,6 +88,13 @@ import {AccountComponent} from './account/account.component';
 import {TableSupplierComponent} from './supplier/components/table-supplier/table-supplier.component'
 import {ChartComponent} from './supplier/components/chart/chart.component'
 import {HighchartsChartModule} from 'highcharts-angular';
+import {DatePipe} from "@angular/common";
+import { ViewOrderComponent } from './manufacturer/view-order/view-order.component';
+import {MatIconModule} from "@angular/material/icon";
+import {MatCardModule} from "@angular/material/card";
+import {MatMenuModule} from "@angular/material/menu";
+import {MatButtonModule} from "@angular/material/button";
+
 
 @NgModule({
   declarations: [
@@ -146,6 +155,8 @@ import {HighchartsChartModule} from 'highcharts-angular';
     ManufacturerChartComponent,
     AccountComponent,
     TableSupplierComponent,
+    ViewOrderComponent,
+    // jqxDateTimeInputCompon ent,
   ],
   imports: [
     BrowserModule,
@@ -170,8 +181,13 @@ import {HighchartsChartModule} from 'highcharts-angular';
     MatInputModule,
     MatDatepickerModule,
     MatTableModule,
+    DateFnsModule.forRoot(),
+    MatIconModule,
+    MatCardModule,
+    MatMenuModule,
+    MatButtonModule,
   ],
-  providers: [],
+  providers: [DatePipe],
   bootstrap: [AppComponent],
 })
 export class AppModule {

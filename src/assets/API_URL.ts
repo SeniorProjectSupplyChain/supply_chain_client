@@ -1,4 +1,4 @@
-export const DOMAIN = 'https://878b9e33e010.ngrok.app';
+export const DOMAIN = 'https://0ddeed6f66b9.ngrok.app';
 
 export const API_URL = {
   LOGIN: () => `${DOMAIN}/auth/login`,
@@ -15,11 +15,18 @@ export const API_PRODUCT = {
   HARVESTPRODUCT: () => `${DOMAIN}/product/harvest`,
 
   //------------------------------------manufacturer----------------------------------//
-  IMPORTPRODUCT: () => `${DOMAIN}`,
-  MANUFACTUREPRODUCT: () => `${DOMAIN}`,
-  EXPORTPRODUCT: () => `${DOMAIN}`,
+  IMPORTPRODUCT: () => `${DOMAIN}/product/import`,
+  MANUFACTUREPRODUCT: () => `${DOMAIN}/product/manufacture`,
+  EXPORTPRODUCT: () => `${DOMAIN}/product/export`,
 
 }
+
+export const API_ORDER = {
+  GETALLORDERS: () => `${DOMAIN}/order/all?status=PENDING`,
+  GETALLORDERSMANUFACTURER: () => `${DOMAIN}/order/all/of-manufacturer`,
+}
+
+
 
 export const API_USER = {
   GETALLUSERS: () => `${DOMAIN}/user/all`,
