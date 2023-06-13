@@ -57,6 +57,9 @@
   color: #00FF00;
 }
 
+.mat-mdc-menu-panel.mat-mdc-menu-panel{
+  max-width: 1000px !important;
+}
 
 ///* You can add global styles to this file, and also import other style files */
 //@tailwind base;
@@ -4192,4 +4195,4 @@
 //}
 //
 //html, body { height: 100%; }
-//body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+//body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }s
