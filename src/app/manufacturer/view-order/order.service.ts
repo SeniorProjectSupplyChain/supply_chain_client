@@ -35,6 +35,16 @@ export class OrderService {
       );
   }
 
+  getOrder(orderId: string) {
+    return this.http.get(API_ORDER.GETORDER(orderId), {headers: this.headers})
+      .pipe(
+        catchError((error) => {
+          this.notification.showError("An error has occurred on the server, please try again later.", "Error");
+          return throwError(error.message);
+        })
+      );
+  }
+
   getAllOrderOfManufacturer() {
     const user = this.userService.getUser()
     // return this.http.get("http://localhost:4000/product/all?userId=" + user.userId)
@@ -49,7 +59,24 @@ export class OrderService {
 
   approveOrder(orderId : string) {
     const user = this.userService.getUser()
+    // return this.http.get(API_ORDER.GETORDER(orderId), {headers: this.headers})
+    //   .pipe(
+    //     catchError((error) => {
+    //       this.notification.showError("An error has occurred on the server, please try again later.", "Error");
+    //       return throwError(error.message);
+    //     })
+    //   );
     return this.http.patch(API_ORDER.APPROVEORDER(), {orderId: orderId }, {headers: this.headers})
+      .pipe(
+        catchError((error) => {
+          this.notification.showError("An error has occurred on the server, please try again later.", "Error");
+          return throwError(error.message);
+        })
+      )
+  }
+  rejectOrder(orderId : string) {
+    const user = this.userService.getUser()
+    return this.http.patch(API_ORDER.REJECTORDER(), {orderId: orderId }, {headers: this.headers})
       .pipe(
         catchError((error) => {
           this.notification.showError("An error has occurred on the server, please try again later.", "Error");

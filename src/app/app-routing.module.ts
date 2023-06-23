@@ -19,20 +19,23 @@ import { ProductsComponent } from './views/auth/products/products.component';
 // no layouts views
 import { IndexComponent } from './views/index/index.component';
 import { ProfileComponent } from './views/profile/profile.component';
-import {ViewProductComponent} from "./supplier/components/view-product/view-product.component";
-import {DetailProductComponent} from "./supplier/components/view-product/detail-product/detail-product.component";
-import {SupplierComponent} from "./supplier/components/supplier.component";
+import {SupplierComponent} from "./supplier/supplier.component";
 import {AuthGuard} from "./_guards/auth.guard";
 import {ManufacturerComponent} from "./manufacturer/manufacturer.component";
-import { TableSupplierComponent } from './supplier/components/table-supplier/table-supplier.component';
+import { TableSupplierComponent } from './supplier/table-supplier/table-supplier.component';
 import { Chart } from 'chart.js';
-import { ChartComponent } from './supplier/components/chart/chart.component';
+import { ChartComponent } from './supplier/chart/chart.component';
+import { ManufacturerChartComponent } from './manufacturer/manufacturer-chart/manufacturer-chart.component';
+import { ManageProductComponent } from './manufacturer/manage-product/manage-product.component';
+import {ViewOrderComponent} from "./manufacturer/view-order/view-order.component";
+import { HistoryTransactionComponent } from './layouts/history-transaction/history-transaction.component';
 
 const routes: Routes = [
   // admin views
   {
     path: 'admin',
     component: AdminComponent,
+    canActivate: [AuthGuard],
     children: [
       { path: 'dashboard', component: DashboardComponent },
 
@@ -61,14 +64,24 @@ const routes: Routes = [
     component: ManufacturerComponent,
     canActivate: [AuthGuard],
     children: [
-      { path: "all", component: ViewProductComponent },
-      { path: "", redirectTo: "supplier", pathMatch: "full" },
+      { path: 'chart-manufacturer', component: ManufacturerChartComponent },
+      { path: 'table-manufacturer', component: ManageProductComponent },
+      { path: 'request-manufacturer', component: ViewOrderComponent },
+      { path: 'history-manager', component: ManageProductComponent },
+      { path: 'account-manager', component: ManageProductComponent },
+      { path: '**', redirectTo: 'chart-manufacturer', pathMatch: 'full' },
     ],
+  },
+
+  {
+    path: "product-commercial/:productId",
+    component: HistoryTransactionComponent,
   },
   // auth views
   {
     path: 'auth',
     component: AuthComponent,
+    canActivate: [AuthGuard],
     children: [
       { path: 'login', component: LoginComponent },
       { path: 'register', component: RegisterComponent },
