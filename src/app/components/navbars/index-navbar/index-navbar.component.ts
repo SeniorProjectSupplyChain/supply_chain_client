@@ -47,6 +47,7 @@ export class IndexNavbarComponent implements OnInit {
   }
   close() {
     this.openDialogLogin = true;
+    this.isInvalid = false
     this.myDialog?.nativeElement.close();
   }
   save() {
@@ -69,6 +70,7 @@ export class IndexNavbarComponent implements OnInit {
     }
   }
 
+  isInvalid: boolean = false
   ngOnInit(): void {
     this.password = 'password';
 
@@ -134,7 +136,7 @@ export class IndexNavbarComponent implements OnInit {
       },
       (err) => {
         console.log(err);
-
+        this.isInvalid = true
         this.loading = false;
 
         // AlertService.setAlertModel('error',err.error.message)

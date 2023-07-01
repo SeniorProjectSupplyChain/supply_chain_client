@@ -17,7 +17,7 @@
     >
       <option value='supplier'>Supplier</option>
       <option value='manufacturer' selected>Manufacturer</option>
-      <option value='distributor'>Distributor</option>
+      <!--      <option value='distributor'>Distributor</option>-->
     </select>
   </div>
 </form>
@@ -90,7 +90,7 @@
                 </p>
               </ng-container>
               <ng-container *ngIf='!element.dates[2]'>
-                On Going...
+                Updating ...
               </ng-container>
             </td>
           </ng-container>
@@ -200,8 +200,8 @@
               <button type='button'
                       class='mr-3 fa-solid focus:outline-none fa-pen-to-square text-base text-blue-500 hover:text-blue-600 transition-colors duration-300 ease-in-out transform'
                       (click)='open(element);manufacturerDetailDialog.showModal();'></button>
-              <button type='button'
-                      class='fa-solid focus:outline-none fa-trash-can text-base text-red-500 hover:text-red-600 transition-colors duration-300 ease-in-out transform'></button>
+              <!--              <button type='button'-->
+              <!--                      class='fa-solid focus:outline-none fa-trash-can text-base text-red-500 hover:text-red-600 transition-colors duration-300 ease-in-out transform'></button>-->
             </td>
           </ng-container>
 
@@ -332,7 +332,7 @@
                                        id='description' name='description'
                                        [(ngModel)]='product.description'>{{ product.description }}</textarea>
             </p>
-            <div class='lg:mt-5 mt-4'>
+            <div class='lg:mt-5 mt-4' *ngIf="product.status.toLowerCase()!='cultivated'&&product.status.toLowerCase()!='harvested'">
               <div class='flex flex-row justify-between'>
                 <p class='font-medium text-base leading-4 text-gray-600 w-[7.5rem]'>Expired</p>
                 <div class='flex justify-end'>
@@ -388,7 +388,7 @@
                   <br>
                   <input type='text' id='harvestedDate' name='harvestedDate' class='border-0' *ngIf='product.dates[1]'
                          [value]="product.dates[1].time | date: 'dd - MMM - yyyy HH:mm:ss'" disabled>
-                  <input type='text' name='harvestedDate' [value]="'dd - MMM - yyyy'" *ngIf='!product.dates[1]'
+                  <input type='text' name='harvestedDate' [value]="'Updating ...'" *ngIf='!product.dates[1]'
                          disabled>
                 </div>
               </div>
@@ -408,7 +408,7 @@
                   <input type='text' id='manufacturedDate' name='harvestedDate' class='border-0'
                          *ngIf='product.dates[3]'
                          [value]="product.dates[3].time | date: 'dd - MMM - yyyy HH:mm:ss'" disabled>
-                  <input type='text' name='harvestedDate' [value]="'dd - MMM - yyyy'" *ngIf='!product.dates[3]'
+                  <input type='text' name='harvestedDate' [value]="'Updateing ...'" *ngIf='!product.dates[3]'
                          disabled>
                 </div>
               </div>
@@ -427,7 +427,7 @@
                   <br>
                   <input type='text' id='distributedDate' name='harvestedDate' class='border-0' *ngIf='product.dates[5]'
                          [value]="product.dates[5].time | date: 'dd - MMM - yyyy HH:mm:ss'" disabled>
-                  <input type='text' name='harvestedDate' [value]="'dd - MMM - yyyy'" *ngIf='!product.dates[5]'
+                  <input type='text' name='harvestedDate' [value]="'Updateing ...'" *ngIf='!product.dates[5]'
                          disabled>
                 </div>
               </div>
@@ -445,7 +445,7 @@
                   <br>
                   <input type='text' id='soldDate' name='harvestedDate' class='border-0' *ngIf='product.dates[6]'
                          [value]="product.dates[6].time | date: 'dd - MMM - yyyy HH:mm:ss'" disabled>
-                  <input type='text' name='harvestedDate' [value]="'dd - MMM - yyyy'" *ngIf='!product.dates[6]'
+                  <input type='text' name='harvestedDate' [value]="'Updateing ...'" *ngIf='!product.dates[6]'
                          disabled>
                 </div>
               </div>
@@ -468,10 +468,12 @@
                         (click)='manufactureProduct()' *ngIf="product.status.toLowerCase() == 'imported'">
                   Manufacture this product!
                 </button>
-                <button type='submit'
-                        class='w-3/12 border text-white font-bold uppercase text-xs px-4 py-2 rounded-lg shadow hover:shadow-md outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150'
-                        [disabled]='!product.productName || !product.amount || product.image == null || product.image.length == 0'
-                        [ngClass]="!product.productName || !product.amount || product.image == null || product.image.length == 0 ? 'bg-slate-400' : 'bg-green-500 hover:bg-green-600'">
+                <button
+                  *ngIf="product.status.toLowerCase()!='cultivated'&&product.status.toLowerCase()!='harvested'"
+                  [disabled]='!product.productName || !product.amount || product.image == null || product.image.length == 0'
+                  [ngClass]="!product.productName || !product.amount || product.image == null || product.image.length == 0 ? 'bg-slate-400' : 'bg-green-500 hover:bg-green-600'"
+                  class='w-3/12 border text-white font-bold uppercase text-xs px-4 py-2 rounded-lg shadow hover:shadow-md outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150'
+                  type='submit'>
                   Submit
                 </button>
               </div>
@@ -512,8 +514,8 @@
     <a href='{{ product.qrCode }}' target='_blank' *ngIf="product.qrCode!=''">
       <div class='w-full'
            style='height: 90vh; position: relative; background-size: contain; background-position: center; padding: 0 15px; display: flex; justify-content: space-between; align-items: center; background-repeat: no-repeat;'
-           [ngStyle]="{'background-image': 'url('+ product.qrCode +' )'}">
-        <img src='{{product.qrCode}}' alt='' sizes='' srcset='' #qrCodeDiv>
+           [ngStyle]="{'background-image': 'url('+ product.qrCode +' )'}"#qrCodeDiv>
+<!--        <img src='{{product.qrCode}}' alt='' sizes='' srcset='' >-->
       </div>
     </a>
 

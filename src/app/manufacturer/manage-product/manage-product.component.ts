@@ -193,6 +193,36 @@ export class ManageProductComponent {
         this.isManufacturer = false
         this.isDistributor = false
         showProducts = this.productModel.filter((i: any) => i.status.toLowerCase() == 'cultivated' || i.status.toLowerCase() == 'harvested')
+          .sort((a: any, b: any) => {
+            // So sánh trạng thái của hai phần tử
+            if (a.status.toLowerCase() === 'cultivated' && b.status.toLowerCase() !== 'cultivated') {
+              return -1; // a trước b
+            }
+            if (a.status.toLowerCase() !== 'cultivated' && b.status.toLowerCase() === 'cultivated') {
+              return 1; // b trước a
+            }
+            return 0; // Không thay đổi thứ tự
+
+            // Nếu bạn muốn sắp xếp theo thứ tự ngược lại (cultivated sau cùng), bạn có thể đổi giá trị trả về của các câu điều kiện.
+
+          })
+          .sort((a:any, b:any) => {
+          if (a.status.toLowerCase() === b.status.toLowerCase()) {
+            const timeA = new Date(a.dates[0].time).getTime();
+            const timeB = new Date(b.dates[0].time).getTime();
+            return timeB - timeA;
+          }
+          return 0;
+        }).sort((a: any, b: any) => {
+          // Sắp xếp theo thời gian ("dates[0].time") nếu cùng trạng thái
+          if (a.status.toLowerCase() === 'harvested' && b.status.toLowerCase() === 'harvested') {
+            const timeA = new Date(a.dates[1].time).getTime();
+            const timeB = new Date(b.dates[1].time).getTime();
+            return timeB - timeA;
+          }
+
+          return 0; // Không thay đổi thứ tự
+        });
         this.dataSourceProduct = new MatTableDataSource(showProducts)
         this.dataSourceProduct.paginator = this.manufacturerPaginator
         break;
@@ -203,6 +233,36 @@ export class ManageProductComponent {
         this.isManufacturer = true
         this.isDistributor = false
         showProducts = this.productModel.filter((i: any) => i.status.toLowerCase() == 'imported' || i.status.toLowerCase() == 'manufactured')
+          .sort((a: any, b: any) => {
+            // So sánh trạng thái của hai phần tử
+            if (a.status.toLowerCase() === 'imported' && b.status.toLowerCase() !== 'imported') {
+              return -1; // a trước b
+            }
+            if (a.status.toLowerCase() !== 'imported' && b.status.toLowerCase() === 'imported') {
+              return 1; // b trước a
+            }
+            return 0; // Không thay đổi thứ tự
+
+            // Nếu bạn muốn sắp xếp theo thứ tự ngược lại (cultivated sau cùng), bạn có thể đổi giá trị trả về của các câu điều kiện.
+
+          })
+          .sort((a:any, b:any) => {
+            if (a.status.toLowerCase() === b.status.toLowerCase()) {
+              const timeA = new Date(a.dates[2].time).getTime();
+              const timeB = new Date(b.dates[2].time).getTime();
+              return timeB - timeA;
+            }
+            return 0;
+          }).sort((a: any, b: any) => {
+            // Sắp xếp theo thời gian ("dates[0].time") nếu cùng trạng thái
+            if (a.status.toLowerCase() === 'manufactured' && b.status.toLowerCase() === 'manufactured') {
+              const timeA = new Date(a.dates[3].time).getTime();
+              const timeB = new Date(b.dates[3].time).getTime();
+              return timeB - timeA;
+            }
+
+            return 0; // Không thay đổi thứ tự
+          });
         this.dataSourceProduct = new MatTableDataSource(showProducts)
         this.dataSourceProduct.paginator = this.manufacturerPaginator
         break;
@@ -213,6 +273,36 @@ export class ManageProductComponent {
         this.isManufacturer = false
         this.isDistributor = true
         showProducts = this.productModel.filter((i: any) => i.status.toLowerCase() == 'exported' || i.status.toLowerCase() == 'distributing')
+          .sort((a: any, b: any) => {
+            // So sánh trạng thái của hai phần tử
+            if (a.status.toLowerCase() === 'exported' && b.status.toLowerCase() !== 'exported') {
+              return -1; // a trước b
+            }
+            if (a.status.toLowerCase() !== 'exported' && b.status.toLowerCase() === 'exported') {
+              return 1; // b trước a
+            }
+            return 0; // Không thay đổi thứ tự
+
+            // Nếu bạn muốn sắp xếp theo thứ tự ngược lại (cultivated sau cùng), bạn có thể đổi giá trị trả về của các câu điều kiện.
+
+          })
+          .sort((a:any, b:any) => {
+            if (a.status.toLowerCase() === b.status.toLowerCase()) {
+              const timeA = new Date(a.dates[4].time).getTime();
+              const timeB = new Date(b.dates[4].time).getTime();
+              return timeB - timeA;
+            }
+            return 0;
+          }).sort((a: any, b: any) => {
+            // Sắp xếp theo thời gian ("dates[0].time") nếu cùng trạng thái
+            if (a.status.toLowerCase() === 'distributing' && b.status.toLowerCase() === 'distributing') {
+              const timeA = new Date(a.dates[5].time).getTime();
+              const timeB = new Date(b.dates[5].time).getTime();
+              return timeB - timeA;
+            }
+
+            return 0; // Không thay đổi thứ tự
+          });
         this.dataSourceProduct = new MatTableDataSource(showProducts)
         this.dataSourceProduct.paginator = this.manufacturerPaginator
         break;

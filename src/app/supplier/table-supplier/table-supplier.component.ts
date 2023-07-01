@@ -38,7 +38,7 @@ export class TableSupplierComponent implements OnInit {
   isImageLoading = false;
 
   currentDate: Date = new Date();
-
+  showImageDiff : Boolean = false;
   user: any = this.userService.getUser();
   item: Product = {
     userId: '',
@@ -116,15 +116,6 @@ export class TableSupplierComponent implements OnInit {
         this.productModel = data.data
           .filter((i: any) => i.dates[0].time != '')
           .sort((a: any, b: any) => {
-            // Sắp xếp theo thời gian ("dates[0].time") nếu cùng trạng thái
-            if (a.status.toLowerCase() === b.status.toLowerCase()) {
-              const timeA = new Date(a.dates[0].time).getTime();
-              const timeB = new Date(b.dates[0].time).getTime();
-              return timeB - timeA;
-            }
-
-            return 0; // Không thay đổi thứ tự
-          }).sort((a: any, b: any) => {
             // So sánh trạng thái của hai phần tử
             if (a.status.toLowerCase() === 'cultivated' && b.status.toLowerCase() !== 'cultivated') {
               return -1; // a trước b
@@ -136,8 +127,16 @@ export class TableSupplierComponent implements OnInit {
 
             // Nếu bạn muốn sắp xếp theo thứ tự ngược lại (cultivated sau cùng), bạn có thể đổi giá trị trả về của các câu điều kiện.
 
-          })
-          .sort((a: any, b: any) => {
+          }).sort((a: any, b: any) => {
+            // Sắp xếp theo thời gian ("dates[0].time") nếu cùng trạng thái
+            if (a.status.toLowerCase() === b.status.toLowerCase()) {
+              const timeA = new Date(a.dates[0].time).getTime();
+              const timeB = new Date(b.dates[0].time).getTime();
+              return timeB - timeA;
+            }
+
+            return 0; // Không thay đổi thứ tự
+          }).sort((a: any, b: any) => {
             // Sắp xếp theo thời gian ("dates[0].time") nếu cùng trạng thái
             if (a.status.toLowerCase() === 'harvested' && b.status.toLowerCase() === 'harvested') {
               const timeA = new Date(a.dates[1].time).getTime();
@@ -178,6 +177,7 @@ export class TableSupplierComponent implements OnInit {
   }
 
   openToAdd() {
+    this.imageUrl = ''
     this.isCreate = true;
     let that = this;
     this.product = new class implements ProductObj {
@@ -453,7 +453,7 @@ export class TableSupplierComponent implements OnInit {
   isOpenHistoryDialog: boolean = false;
   @ViewChild('historyDialog') historyDialog: ElementRef | undefined;
   @ViewChild('historyPaginator', {static: true}) historyPaginator!: MatPaginator
-  displayHistoryColumns = ['Index', 'newTransactionId', 'newTimestamp', 'oldTransactionId', 'oldTimestamp', 'action']
+  displayHistoryColumns = ['Index',  'oldTransactionId', 'oldTimestamp','newTransactionId', 'newTimestamp', 'action']
   dataSourceHistory = new MatTableDataSource<any>()
 
   openHistoryDialog(e: any) {
@@ -467,6 +467,7 @@ export class TableSupplierComponent implements OnInit {
   }
 
   loadDataHistoryProduct(productId: string) {
+    this.isDetailLoading = true
     this.productService.getHistoryProduct(productId).subscribe(
       (response: any) => {
         let data = response;
@@ -478,7 +479,7 @@ export class TableSupplierComponent implements OnInit {
         this.dataSourceHistory = new MatTableDataSource(changeEvent)
         this.dataSourceHistory.paginator = this.historyPaginator
         console.log('History', changeEvent);
-
+        this.isDetailLoading = false
       },
     );
   }
@@ -547,12 +548,47 @@ export class TableSupplierComponent implements OnInit {
   openCompareDialog(data: any) {
     this.isOpenCompareDialog = true
     this.compareObj = data
-    console.log('COMPARE',this.compareObj);
 
   }
 
   closeCompareDialog() {
     this.isOpenCompareDialog = false
     this.compareDialog?.nativeElement.close()
+  }
+
+  getDifferenceObject(obj1: any, obj2: any) {
+    var differenceObject: any = {
+      old: {},
+      new: {}
+    };
+
+    for (var key in obj1) {
+      if (obj1.hasOwnProperty(key) && obj2.hasOwnProperty(key)) {
+        if (obj1[key] !== obj2[key]) {
+          differenceObject.old[key] = obj1[key];
+          differenceObject.new[key] = obj2[key];
+        }
+      }
+      if (obj1.hasOwnProperty('image') && obj2.hasOwnProperty('image')) {
+        if (obj1['image'].length !== obj2['image'].length) {
+          this.showImageDiff = true;
+        }
+        else {
+          for(var i=0; i<=obj1['image'].length; i++ ){
+            if(obj1['image'][i]!=obj2['image'][i]){
+          this.showImageDiff = true;
+            }
+          }
+        }
+      }
+    }
+
+
+    return differenceObject;
+  }
+
+  isShowFullId: boolean = false
+  showFullId() {
+    this.isShowFullId = !this.isShowFullId
   }
 }

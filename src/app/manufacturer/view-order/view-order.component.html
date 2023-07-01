@@ -1,4 +1,29 @@
 <app-loading-table [isTableloading]="isTableLoading"></app-loading-table>
+<form class='mb-2'>
+  <div class='flex'>
+
+
+    <mat-form-field class='relative w-full'>
+      <input matInput placeholder='Search retailer name...' #inputOrder type='search' id='search-dropdown'
+             class='block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-r-lg border-l-gray-50 border-l-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-l-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500'
+             required (keyup)='applyOrderFilter($event)'>
+
+    </mat-form-field>
+    <select [(ngModel)]='selectedOrderStatus'
+            name='status'
+            id='status'
+            class='block w-2/12 p-2 mb-6 text-sm text-gray-900 border border-gray-300 rounded-r-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+            (change)='loadOrderData()'
+    >
+      <option value='pending'>Pending</option>
+      <option value='approved' selected>Approved</option>
+      <option value='shipping' selected>Shipping</option>
+      <option value='shipped' selected>Shipped</option>
+      <option value='rejected' selected>Rejected</option>
+      <!--      <option value='distributor'>Distributor</option>-->
+    </select>
+  </div>
+</form>
 <div class="block">
   <div class="flex flex-wrap mt-4 justify-center">
     <div class="block w-full overflow-x-auto">
@@ -38,6 +63,11 @@
         <ng-container matColumnDef="createDate">
           <th mat-header-cell *matHeaderCellDef> Order Time</th>
           <td mat-cell *matCellDef="let element"> {{element.createDate | date: 'dd - MMM - yyyy HH:mm:ss'}} </td>
+<!--          <td mat-cell *matCellDef="let i = index"> {{i + 1}} </td>-->
+        </ng-container>
+        <ng-container matColumnDef="updateDate">
+          <th mat-header-cell *matHeaderCellDef> Update Time</th>
+          <td mat-cell *matCellDef="let element"> {{element.updateDate | date: 'dd - MMM - yyyy HH:mm:ss'}} </td>
 <!--          <td mat-cell *matCellDef="let i = index"> {{i + 1}} </td>-->
         </ng-container>
         <ng-container matColumnDef="action">

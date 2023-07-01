@@ -68,6 +68,9 @@
             Password should have at under 30 characters.
           </div>
         </div>
+        <div *ngIf="isInvalid" class="text-red-500 text-center">
+          Invalid Credential.
+        </div>
 <!--        <div class="checkbox-container">-->
 <!--          <label class="checkbox">-->
 <!--            <input type="checkbox" class="focus:ring-[#f8f8f8]" id="checkbox"/>-->
