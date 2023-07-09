@@ -25,9 +25,15 @@
     <th mat-header-cell *matHeaderCellDef> No.</th>
     <td mat-cell *matCellDef='let i = index'> {{i + 1}} </td>
   </ng-container>
+  <ng-container matColumnDef='productImage'>
+    <th mat-header-cell *matHeaderCellDef class='w-16'> Image</th>
+    <td mat-cell *matCellDef='let element' class='w-16 cursor-pointer'>
+      <button (click)=' openImageDialog(element.image); imageDialog.showModal()' class='focus:outline-none'>
+        <img src='{{element.image[0]}}'>
+      </button>
+    </td>
+  </ng-container>
 
-
-  <!-- Weight Column -->
   <ng-container matColumnDef='productName'>
     <th mat-header-cell *matHeaderCellDef> Product name</th>
     <td mat-cell *matCellDef='let element'> {{element.productName}} </td>
@@ -124,6 +130,62 @@
   <tr mat-row *matRowDef='let row; columns: displayProductColumns;'></tr>
 </table>
 <mat-paginator #productPaginator [pageSizeOptions]='[5, 10, 25, 100]' aria-label='Select page of users'></mat-paginator>
+<dialog [ngClass]="isOpenImageDialog ? 'flex': 'hidden'" class=' relative flex-col bg-blueGray-100 rounded-lg w-5/6' #imageDialog>
+  <div class='block'>
+    <p class='text-xl font-medium'>Image product</p>
+
+    <button type='button' class='absolute top-2 right-6 focus:outline-none text-xl font-bold text-red-600'
+            (click)='closeImageDialog()'>X
+    </button>
+
+    <div class='w-full '>
+      <div style='height: 70vh; width: 100%;' class='mb-2 border-4 rounded'>
+        <div style='display: flex; flex-direction: column; height: 100%; width: 100%;'>
+          <div style='flex: 5'>
+            <div
+              style='position: relative; background-size: contain; background-position: center; padding: 0 15px; display: flex; justify-content: space-between; align-items: center; height: 100%; background-repeat: no-repeat;'
+              [ngStyle]="{'background-image': 'url('+ showImage![currentImagePos] +' )'}">
+              <div style='border-radius: 5px; background-color: aliceblue; height: 35px; width: 35px'
+                   (click)='previousImage(false)'>
+                <svg class='h-8 w-8 text-black' width='24' height='24' viewBox='0 0 24 24' stroke-width='2'
+                     stroke='currentColor' fill='none' stroke-linecap='round' stroke-linejoin='round'>
+                  <path stroke='none' d='M0 0h24v24H0z' />
+                  <line x1='5' y1='12' x2='19' y2='12' />
+                  <line x1='5' y1='12' x2='11' y2='18' />
+                  <line x1='5' y1='12' x2='11' y2='6' />
+                </svg>
+              </div>
+              <div style='border-radius: 5px; background-color: aliceblue; height: 35px; width: 35px'
+                   (click)='afterImage(false)'>
+                <svg class='h-8 w-8 text-black' width='24' height='24' viewBox='0 0 24 24' stroke-width='2'
+                     stroke='currentColor' fill='none' stroke-linecap='round' stroke-linejoin='round'>
+                  <path stroke='none' d='M0 0h24v24H0z' />
+                  <line x1='5' y1='12' x2='19' y2='12' />
+                  <line x1='13' y1='18' x2='19' y2='12' />
+                  <line x1='13' y1='6' x2='19' y2='12' />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div (drag)='moveImages($event)' (dragend)='endDrag($event)' id='imageProductThumnailContain' class='mt-2'
+               style='position: relative;flex: 1; align-items: center; justify-content: center; overflow: hidden;'>
+            <div id='imageProductThumnails'
+                 style='position: absolute;height: 100%; display: flex; align-items: center; padding: 0 5px;'
+                 [style.left]='distanceString' (dragstart)='getFirstPos($event)'>
+              <div *ngFor='let image of showImage; let i = index'
+                   [ngStyle]="{ 'border': i === currentImagePos ? '2px solid' : '', 'background-image': 'url(' + image + ')' }"
+                   style='background-repeat: no-repeat; object-fit: cover; background-position: center; display: inline; float: left; height: 100%; width: 110px;
+            border-radius: 10px; background-size: contain; margin: 0 5px;' (click)='chooseImage(i)'>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</dialog>
 <dialog [ngClass]="openDialog ? 'flex':'hidden'" class=' relative flex-col bg-blueGray-100 rounded-lg w-5/6' #dialog>
   <!--  <div class="backdrop" (mousedown)="onBackdropClick($event)"></div>-->
   <p class='text-xl font-medium' *ngIf='!isCreate'>Update product</p>
@@ -427,8 +489,9 @@
             <td mat-cell *matCellDef='let element'
                 class='border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-center'>
               <button type='button' class='w-1/12 h-1/12 focus:outline-none'
-                      (click)='openCompareDialog(element);compareDialog.showModal()'>
-                <mat-icon class='text-lime-500'>remove_red_eye</mat-icon>
+                      (click)='openCompareDialog(element);compareDialog.showModal()' [disabled]='isNew'>
+                <mat-icon class='text-lime-500' *ngIf='!isNew'>remove_red_eye</mat-icon>
+                <mat-icon *ngIf='isNew'>visibility_off</mat-icon>
               </button>
             </td>
           </ng-container>

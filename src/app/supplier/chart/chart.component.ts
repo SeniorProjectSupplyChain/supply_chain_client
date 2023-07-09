@@ -229,7 +229,7 @@ export class ChartComponent implements OnInit {
           type: 'areaspline'
         },
         title: {
-          text: 'Product Prices'
+          text: 'Products'
         },
         xAxis: {
           categories: categories,
@@ -237,7 +237,7 @@ export class ChartComponent implements OnInit {
         },
         yAxis: {
           title: {
-            text: 'Price'
+            text: 'Products'
           }
         },
         series: [

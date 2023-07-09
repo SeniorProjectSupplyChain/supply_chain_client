@@ -91,9 +91,9 @@ export class ManageProductComponent {
   product: ProductObj = this.item.productObj
   productModel: ProductObj [] = []
   dataSourceProduct = new MatTableDataSource<any>;
-  displayedColumns: string[] = ['Index', 'ProductName', 'cultivatedDate', 'harvestedDate', 'Price', 'Status', 'Action']
+  displayedColumns: string[] = ['Index', 'productImage' , 'ProductName', 'cultivatedDate', 'harvestedDate', 'Price', 'Status', 'Action']
 
-  // displayedColumns: string[] = ['Index', 'ProductName', 'CultivatedDate', 'HarvestedDate', 'Price', 'Status', 'Action']
+  // displayedColumns: string[] = ['Index', 'productImage' , 'ProductName', 'CultivatedDate', 'HarvestedDate', 'Price', 'Status', 'Action']
 
 
   constructor(
@@ -188,7 +188,7 @@ export class ManageProductComponent {
     let showProducts
     switch (this.selectedStatus) {
       case 'supplier':
-        this.displayedColumns = ['Index', 'ProductName', 'cultivatedDate', 'harvestedDate', 'Price', 'Status', 'Action']
+        this.displayedColumns = ['Index', 'productImage' , 'ProductName', 'cultivatedDate', 'harvestedDate', 'Price', 'Status', 'Action']
         this.isSupplier = true
         this.isManufacturer = false
         this.isDistributor = false
@@ -207,28 +207,28 @@ export class ManageProductComponent {
 
           })
           .sort((a:any, b:any) => {
-          if (a.status.toLowerCase() === b.status.toLowerCase()) {
-            const timeA = new Date(a.dates[0].time).getTime();
-            const timeB = new Date(b.dates[0].time).getTime();
-            return timeB - timeA;
-          }
-          return 0;
-        }).sort((a: any, b: any) => {
-          // Sắp xếp theo thời gian ("dates[0].time") nếu cùng trạng thái
-          if (a.status.toLowerCase() === 'harvested' && b.status.toLowerCase() === 'harvested') {
-            const timeA = new Date(a.dates[1].time).getTime();
-            const timeB = new Date(b.dates[1].time).getTime();
-            return timeB - timeA;
-          }
+            if (a.status.toLowerCase() === b.status.toLowerCase()) {
+              const timeA = new Date(a.dates[0].time).getTime();
+              const timeB = new Date(b.dates[0].time).getTime();
+              return timeB - timeA;
+            }
+            return 0;
+          }).sort((a: any, b: any) => {
+            // Sắp xếp theo thời gian ("dates[0].time") nếu cùng trạng thái
+            if (a.status.toLowerCase() === 'harvested' && b.status.toLowerCase() === 'harvested') {
+              const timeA = new Date(a.dates[1].time).getTime();
+              const timeB = new Date(b.dates[1].time).getTime();
+              return timeB - timeA;
+            }
 
-          return 0; // Không thay đổi thứ tự
-        });
+            return 0; // Không thay đổi thứ tự
+          });
         this.dataSourceProduct = new MatTableDataSource(showProducts)
         this.dataSourceProduct.paginator = this.manufacturerPaginator
         break;
 
       case 'manufacturer':
-        this.displayedColumns = ['Index', 'ProductName', 'importedDate', 'manufacturedDate', 'Price', 'Status', 'Action']
+        this.displayedColumns = ['Index', 'productImage' , 'ProductName', 'importedDate', 'manufacturedDate', 'Price', 'Status', 'Action']
         this.isSupplier = false
         this.isManufacturer = true
         this.isDistributor = false
@@ -268,7 +268,7 @@ export class ManageProductComponent {
         break;
 
       case 'distributor':
-        this.displayedColumns = ['Index', 'ProductName', 'exportedDate', 'distributingDate', 'Price', 'Status', 'Action']
+        this.displayedColumns = ['Index', 'productImage' , 'ProductName', 'exportedDate', 'distributingDate', 'Price', 'Status', 'Action']
         this.isSupplier = false
         this.isManufacturer = false
         this.isDistributor = true
@@ -504,10 +504,15 @@ export class ManageProductComponent {
     });
   }
 
-  previousImage() {
+  previousImage(data: any = true) {
     this.setLimitDrag();
     if (this.currentImagePos - 1 < 0) {
-      this.currentImagePos = this.imageList!.length - 1;
+      if (data) {
+        this.currentImagePos = this.imageList!.length - 1;
+      }
+      if (!data) {
+        this.currentImagePos = this.showImage!.length - 1;
+      }
       this.distanNumber = -(this.limitDrag + 110)
       this.distanceString = (this.distanNumber).toString() + 'px';
     } else {
@@ -534,17 +539,29 @@ export class ManageProductComponent {
     this.setLimitDrag();
   }
 
-  forwardImage() {
+  forwardImage(data: any = true) {
+    console.log("FORWARD");
     this.setLimitDrag();
-    if (this.currentImagePos + 1 > this.imageList!.length - 1) {
-      this.currentImagePos = 0;
-      this.distanNumber = 0
-      this.distanceString = (this.distanNumber).toString() + 'px';
-      return;
-    } else {
-      this.currentImagePos += 1;
+    if (data) {
+      if (this.currentImagePos + 1 > this.imageList!.length - 1) {
+        this.currentImagePos = 0;
+        this.distanNumber = 0
+        this.distanceString = (this.distanNumber).toString() + 'px';
+        return;
+      } else {
+        this.currentImagePos += 1;
+      }
     }
-
+    if (!data) {
+      if (this.currentImagePos + 1 > this.showImage!.length - 1) {
+        this.currentImagePos = 0;
+        this.distanNumber = 0
+        this.distanceString = (this.distanNumber).toString() + 'px';
+        return;
+      } else {
+        this.currentImagePos += 1;
+      }
+    }
     const widthOfCurrentImagePos = (this.currentImagePos + 1) * 120;
     if (widthOfCurrentImagePos + this.distanNumber > this.widthContain) {
       if (this.distanNumber - 110 <= -this.limitDrag) {
@@ -650,5 +667,16 @@ export class ManageProductComponent {
     this.isOpenHistoryDialog = false
     this.historyDialog?.nativeElement.close()
   }
+  isOpenImageDialog = false;
+  @ViewChild('imageDialog') imageDialog: ElementRef | undefined
+  showImage: string[] = []
+  openImageDialog(image: []) {
+    this.showImage = image
+    this.isOpenImageDialog = true
+  }
 
+  closeImageDialog() {
+    this.isOpenImageDialog = false
+    this.imageDialog?.nativeElement.close()
+  }
 }

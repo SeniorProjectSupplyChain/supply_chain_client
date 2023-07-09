@@ -38,7 +38,7 @@ export class TableSupplierComponent implements OnInit {
   isImageLoading = false;
 
   currentDate: Date = new Date();
-  showImageDiff : Boolean = false;
+  showImageDiff: Boolean = false;
   user: any = this.userService.getUser();
   item: Product = {
     userId: '',
@@ -103,7 +103,7 @@ export class TableSupplierComponent implements OnInit {
     this.getAllProduct();
   }
 
-  displayProductColumns: string[] = ['index', 'productName', 'cultivatedDate', 'harvestedDate', 'price', 'status', 'action'];
+  displayProductColumns: string[] = ['index', 'productImage', 'productName', 'cultivatedDate', 'harvestedDate', 'price', 'status', 'action'];
   dataSourceProduct = new MatTableDataSource<any>;
   productModel: ProductObj [] = [];
 
@@ -177,7 +177,7 @@ export class TableSupplierComponent implements OnInit {
   }
 
   openToAdd() {
-    this.imageUrl = ''
+    this.imageUrl = '';
     this.isCreate = true;
     let that = this;
     this.product = new class implements ProductObj {
@@ -338,9 +338,14 @@ export class TableSupplierComponent implements OnInit {
   }
 
 
-  previousImage() {
+  previousImage(data: any = true) {
     if (this.currentImagePos - 1 < 0) {
-      this.currentImagePos = this.imageList.length - 1;
+      if (data) {
+        this.currentImagePos = this.imageList!.length - 1;
+      }
+      if (!data) {
+        this.currentImagePos = this.showImage!.length - 1;
+      }
       this.distanNumber = -(this.limitDrag + 110);
       this.distanceString = (this.distanNumber).toString() + 'px';
     } else {
@@ -356,18 +361,68 @@ export class TableSupplierComponent implements OnInit {
       this.distanceString = (this.distanNumber + 110).toString() + 'px';
       this.distanNumber += 110;
     }
+
+
+    // if (this.currentImagePos - 1 < 0) {
+    //   this.currentImagePos = this.imageList.length - 1;
+    //   this.distanNumber = -(this.limitDrag + 110);
+    //   this.distanceString = (this.distanNumber).toString() + 'px';
+    // } else {
+    //   this.currentImagePos -= 1;
+    // }
+    // const widthOfCurrentImagePos = (this.currentImagePos + 1) * 120;
+    // if (widthOfCurrentImagePos + this.distanNumber < this.widthContain) {
+    //   if (this.distanNumber + 110 >= 0) {
+    //     this.distanNumber = 0;
+    //     this.distanceString = (this.distanNumber).toString() + 'px';
+    //     return;
+    //   }
+    //   this.distanceString = (this.distanNumber + 110).toString() + 'px';
+    //   this.distanNumber += 110;
+    // }
   }
 
-  afterImage() {
-    if (this.currentImagePos + 1 > this.imageList.length - 1) {
-      this.currentImagePos = 0;
-      this.distanNumber = 0;
-      this.distanceString = (this.distanNumber).toString() + 'px';
-      return;
-    } else {
-      this.currentImagePos += 1;
-    }
+  afterImage(data: any = true) {
+    // if (this.currentImagePos + 1 > this.imageList.length - 1) {
+    //   this.currentImagePos = 0;
+    //   this.distanNumber = 0;
+    //   this.distanceString = (this.distanNumber).toString() + 'px';
+    //   return;
+    // } else {
+    //   this.currentImagePos += 1;
+    // }
+    //
+    // const widthOfCurrentImagePos = (this.currentImagePos + 1) * 120;
+    // if (widthOfCurrentImagePos + this.distanNumber > this.widthContain) {
+    //   if (this.distanNumber - 110 <= -this.limitDrag) {
+    //     this.distanNumber = -this.limitDrag;
+    //     this.distanceString = (this.distanNumber).toString() + 'px';
+    //     return;
+    //   }
+    //   this.distanceString = (this.distanNumber - 110).toString() + 'px';
+    //   this.distanNumber -= 110;
+    // }
 
+    if (data) {
+      if (this.currentImagePos + 1 > this.imageList!.length - 1) {
+        this.currentImagePos = 0;
+        this.distanNumber = 0;
+        this.distanceString = (this.distanNumber).toString() + 'px';
+        return;
+      } else {
+        this.currentImagePos += 1;
+      }
+    }
+    if (!data) {
+      if (this.currentImagePos + 1 > this.showImage!.length - 1) {
+        this.currentImagePos = 0;
+        this.distanNumber = 0;
+        this.distanceString = (this.distanNumber).toString() + 'px';
+        return;
+      } else {
+        this.currentImagePos += 1;
+      }
+    }
     const widthOfCurrentImagePos = (this.currentImagePos + 1) * 120;
     if (widthOfCurrentImagePos + this.distanNumber > this.widthContain) {
       if (this.distanNumber - 110 <= -this.limitDrag) {
@@ -452,9 +507,9 @@ export class TableSupplierComponent implements OnInit {
   //---------------------------------History-------------------------------------//
   isOpenHistoryDialog: boolean = false;
   @ViewChild('historyDialog') historyDialog: ElementRef | undefined;
-  @ViewChild('historyPaginator', {static: true}) historyPaginator!: MatPaginator
-  displayHistoryColumns = ['Index',  'oldTransactionId', 'oldTimestamp','newTransactionId', 'newTimestamp', 'action']
-  dataSourceHistory = new MatTableDataSource<any>()
+  @ViewChild('historyPaginator', { static: true }) historyPaginator!: MatPaginator;
+  displayHistoryColumns = ['Index', 'oldTransactionId', 'oldTimestamp', 'newTransactionId', 'newTimestamp', 'action'];
+  dataSourceHistory = new MatTableDataSource<any>();
 
   openHistoryDialog(e: any) {
     this.isOpenHistoryDialog = true;
@@ -465,28 +520,64 @@ export class TableSupplierComponent implements OnInit {
     this.isOpenHistoryDialog = false;
     this.historyDialog?.nativeElement.close();
   }
+  isNew = false
 
   loadDataHistoryProduct(productId: string) {
-    this.isDetailLoading = true
+    // this.isDetailLoading = true;
+    // this.productService.getHistoryProduct(productId).subscribe(
+    //   (response: any) => {
+    //     let data = response;
+    //     let changeEvent = [];
+    //     for (let i = 0; i < data.data.length - 1; i++) {
+    //       var obj = { new: data.data[i], old: data.data[i + 1] };
+    //       changeEvent.push(obj);
+    //     }
+    //     this.dataSourceHistory = new MatTableDataSource(changeEvent);
+    //     this.dataSourceHistory.paginator = this.historyPaginator;
+    //     console.log('History', changeEvent);
+    //     this.isDetailLoading = false;
+    //   },
+    // );
+
+    this.isDetailLoading = true;
     this.productService.getHistoryProduct(productId).subscribe(
       (response: any) => {
         let data = response;
         let changeEvent = [];
+
         for (let i = 0; i < data.data.length - 1; i++) {
-          var obj = { new: data.data[i], old: data.data[i + 1] };
+          console.log("DATA", data.data[i + 1]);
+          let obj = { new: data.data[i], old: data.data[i + 1] };
           changeEvent.push(obj);
         }
-        this.dataSourceHistory = new MatTableDataSource(changeEvent)
-        this.dataSourceHistory.paginator = this.historyPaginator
+
+        if (changeEvent.length === 0) {
+          this.isNew = true
+          changeEvent.push({
+            new: {},
+            old: data.data[0]
+          });
+        } else {
+          this.isNew = false
+        }
+
         console.log('History', changeEvent);
-        this.isDetailLoading = false
+
+        this.dataSourceHistory = new MatTableDataSource(changeEvent);
+        this.dataSourceHistory.paginator = this.historyPaginator;
+        this.isDetailLoading = false;
       },
+      error => {
+        // Handle error here
+        console.log('Error', error);
+        this.isDetailLoading = false;
+      }
     );
   }
 
   //--------------------------------detail history------------------------//
 
-  isOpenCompareDialog : boolean = false
+  isOpenCompareDialog: boolean = false;
   @ViewChild('compareDialog') compareDialog: ElementRef | undefined;
   compareObj: CompareObj = {
     new: {
@@ -514,7 +605,7 @@ export class TableSupplierComponent implements OnInit {
       },
       transactionId: '',
       timestamp: '',
-      isDelete: false
+      isDelete: false,
     },
     old: {
       record: {
@@ -541,25 +632,25 @@ export class TableSupplierComponent implements OnInit {
       },
       transactionId: '',
       timestamp: '',
-      isDelete: false
-    }
-  }
+      isDelete: false,
+    },
+  };
 
   openCompareDialog(data: any) {
-    this.isOpenCompareDialog = true
-    this.compareObj = data
+    this.isOpenCompareDialog = true;
+    this.compareObj = data;
 
   }
 
   closeCompareDialog() {
-    this.isOpenCompareDialog = false
-    this.compareDialog?.nativeElement.close()
+    this.isOpenCompareDialog = false;
+    this.compareDialog?.nativeElement.close();
   }
 
   getDifferenceObject(obj1: any, obj2: any) {
     var differenceObject: any = {
       old: {},
-      new: {}
+      new: {},
     };
 
     for (var key in obj1) {
@@ -572,11 +663,10 @@ export class TableSupplierComponent implements OnInit {
       if (obj1.hasOwnProperty('image') && obj2.hasOwnProperty('image')) {
         if (obj1['image'].length !== obj2['image'].length) {
           this.showImageDiff = true;
-        }
-        else {
-          for(var i=0; i<=obj1['image'].length; i++ ){
-            if(obj1['image'][i]!=obj2['image'][i]){
-          this.showImageDiff = true;
+        } else {
+          for (var i = 0; i <= obj1['image'].length; i++) {
+            if (obj1['image'][i] != obj2['image'][i]) {
+              this.showImageDiff = true;
             }
           }
         }
@@ -587,8 +677,23 @@ export class TableSupplierComponent implements OnInit {
     return differenceObject;
   }
 
-  isShowFullId: boolean = false
+  isShowFullId: boolean = false;
+
   showFullId() {
-    this.isShowFullId = !this.isShowFullId
+    this.isShowFullId = !this.isShowFullId;
+  }
+
+  isOpenImageDialog = false;
+  @ViewChild('imageDialog') imageDialog: ElementRef | undefined;
+  showImage: string[] = [];
+
+  openImageDialog(image: []) {
+    this.showImage = image;
+    this.isOpenImageDialog = true;
+  }
+
+  closeImageDialog() {
+    this.isOpenImageDialog = false;
+    this.imageDialog?.nativeElement.close();
   }
 }
