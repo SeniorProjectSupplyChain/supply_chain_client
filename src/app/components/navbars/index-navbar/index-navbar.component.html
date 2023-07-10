@@ -3,22 +3,27 @@
     <div class="navbar-brand" bis_skin_checked="1">
       <a href="/" (click)="stateOpenTab(0)" class="navbar-item is-justify-content-flex-start mt-1/2"
          style="padding-top: 0px"><img
-        src="https://firebasestorage.googleapis.com/v0/b/supply-chain-9ea64.appspot.com/o/logo%2Flogo.png?alt=media&token=82860508-bacc-4e73-8afa-675134faa8fa"/></a><a
-      role="button" data-target="nav-menu" aria-label="menu" aria-expanded="false" class="navbar-burger burger"><span
-      aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span></a>
+        src="https://firebasestorage.googleapis.com/v0/b/supply-chain-9ea64.appspot.com/o/logo%2Flogo.png?alt=media&token=82860508-bacc-4e73-8afa-675134faa8fa"/></a>
+        <!-- <a
+      role="button" data-target="nav-menu" aria-label="menu" aria-expanded="false" class="navbar-burger burger">
+      <span
+      aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span></a> -->
+      <div class=" mt-1/2 navbar-start buttonQR" bis_skin_checked="1">
+                <a (click)="stateOpenTab(3)" style="padding-top: 25px;" class="navbar-item" bis_skin_checked="1">Scan Qr</a>
+              </div>
     </div>
-    <div class="navbar-menu is-flex-shrinkable" id="nav-menu" bis_skin_checked="1">
-      <div class="navbar-start" bis_skin_checked="1">
+    <div class="navbar-menu " id="nav-menu" >
+      <div class="navbar-start hiddenButtonQR" >
 <!--        <a (click)="stateOpenTab(1)" class="navbar-item" bis_skin_checked="1">About Us</a>-->
 <!--        <a (click)="stateOpenTab(2)" class="navbar-item" bis_skin_checked="1">Contact Us</a>-->
-        <a (click)="stateOpenTab(3)" class="navbar-item" bis_skin_checked="1">Scan Qr</a>
+        <a (click)="stateOpenTab(3)" class="navbar-item" >Scan Qr</a>
       </div>
-      <div class="navbar-end is-flex-shrinkable" bis_skin_checked="1">
+      <div class="navbar-end " bis_skin_checked="1">
         <div class="navbar-item p-0" bis_skin_checked="1">
           <button class="button is-gradient w-[160px]" type="button" (click)="openLogin(); dialog.showModal()">
             <div class="hover-bold-fix" bis_skin_checked="1">
               <div bis_skin_checked="1">Log in</div>
-              <div bis_skin_checked="1">Log in</div>
+<!--              <div bis_skin_checked="1">Log in</div>-->
             </div>
           </button>
         </div>
@@ -81,7 +86,7 @@
           <app-loading [text]="'Submit'" [isLoading]="loading"></app-loading>
         </button>
         <a class="forget" href="#">Forget password ?</a>
-        <button class="border-[#ec556c] border rounded-[0.5rem] cancel-btn" type="reset" (click)="close()"
+        <button class="border-[#ec556c] border rounded-[0.5rem] cancel-btn" type="reset" (click)="close();"
                 [disabled]="loginForm.invalid">
           Cancel
         </button>
